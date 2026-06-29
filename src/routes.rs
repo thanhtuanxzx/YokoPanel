@@ -1,0 +1,112 @@
+use axum::{
+    response::Redirect,
+    routing::{any, get, post},
+    Router,
+};
+
+use crate::{auth, dashboard, file, process, system, website};
+
+async fn root_redirect() -> Redirect {
+    Redirect::permanent("/dashboard")
+}
+
+async fn overview_redirect() -> Redirect {
+    Redirect::permanent("/website")
+}
+
+async fn traffic_redirect() -> Redirect {
+    Redirect::permanent("/database")
+}
+
+pub fn routes() -> Router {
+    // API routes: return 401 if not authenticated
+    let protected_api = Router::new()
+        .route("/dashboard/data", get(dashboard::data))
+        .route("/ui/templates", get(dashboard::list_template_themes))
+        .route("/ui/template", post(dashboard::set_template_theme))
+        .route("/database/create", post(dashboard::create_database))
+        .route(
+            "/database/set-root-password",
+            post(dashboard::set_database_root_password),
+        )
+        .route("/phpmyadmin", any(dashboard::phpmyadmin_proxy))
+        .route("/phpmyadmin/", any(dashboard::phpmyadmin_proxy))
+        .route("/phpmyadmin/*path", any(dashboard::phpmyadmin_proxy))
+        .route("/software/refresh", post(dashboard::refresh_software_store))
+        .route(
+            "/software/install",
+            post(dashboard::install_software_package),
+        )
+        .route(
+            "/software/download",
+            post(dashboard::download_software_package),
+        )
+        .route("/software/start", post(dashboard::start_software_package))
+        .route(
+            "/software/start-all",
+            post(dashboard::start_all_software_packages),
+        )
+        .route("/software/stop", post(dashboard::stop_software_package))
+        .route(
+            "/software/stop-all",
+            post(dashboard::stop_all_software_packages),
+        )
+        .route(
+            "/software/restart",
+            post(dashboard::restart_software_package),
+        )
+        .route("/software/reload", post(dashboard::reload_software_package))
+        .route(
+            "/software/open-path",
+            post(dashboard::open_software_install_path),
+        )
+        .route(
+            "/software/uninstall",
+            post(dashboard::uninstall_software_package),
+        )
+        .route("/tasks", get(dashboard::list_tasks))
+        .route("/tasks/:id/log", get(dashboard::get_task_log))
+        .route(
+            "/website/php-binding",
+            post(website::save_website_php_binding),
+        )
+        .route("/website/create", post(website::create_website_site))
+        .route("/website/delete", post(website::delete_website_site))
+        .route("/website/start", post(website::start_website_site))
+        .route("/website/pause", post(website::pause_website_site))
+        .route("/website/ssl", post(website::apply_website_ssl_handler))
+        .route("/system", get(system::info))
+        .route("/process", get(process::list))
+        .route("/process/kill", post(process::kill))
+        .route("/files/list", post(file::list_files))
+        .route("/files/read", post(file::read))
+        .route("/files/write", post(file::write))
+        .route("/files/upload", post(file::upload))
+        .route("/files/directories", post(file::list_directories))
+        .route("/files/directories/create", post(file::create_directory))
+        .route("/auth/change-password", post(auth::change_password))
+        .route("/auth/logout", post(auth::logout))
+        .layer(axum::middleware::from_fn(auth::require_auth));
+
+    // Page routes: redirect to /login if not authenticated
+    let protected_pages = Router::new()
+        .route("/dashboard", get(dashboard::page))
+        .route("/website", get(website::website_page))
+        .route("/database", get(dashboard::database_page))
+        .route("/files", get(dashboard::files_page))
+        .route("/software", get(dashboard::software_page))
+        .route("/disks", get(dashboard::page))
+        .route("/processes", get(dashboard::page))
+        .layer(axum::middleware::from_fn(auth::require_auth_page));
+
+    // Public routes (no auth required)
+    Router::new()
+        .route("/", get(root_redirect))
+        .route("/overview", get(overview_redirect))
+        .route("/traffic", get(traffic_redirect))
+        .route("/login", get(auth::login_page).post(auth::login))
+        .route("/login/ui/templates", get(dashboard::list_template_themes))
+        .route("/login/ui/template", post(dashboard::set_template_theme))
+        .merge(protected_api)
+        .merge(protected_pages)
+}
