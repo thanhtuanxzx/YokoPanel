@@ -1,0 +1,111 @@
+{
+  "type": [
+    {
+      "id": 1,
+      "title": "Runtime",
+      "sort": 1
+    },
+    {
+      "id": 2,
+      "title": "Database",
+      "sort": 2
+    },
+    {
+      "id": 3,
+      "title": "Tools",
+      "sort": 3
+    }
+  ],
+  "list": [
+    {
+      "name": "apache",
+      "title": "Apache",
+      "version": "2.4.57",
+      "ps": "Powerful HTTP service for PHP sites, reverse proxy, and rewrite rules.",
+      "price": "0",
+      "endtime": 0,
+      "type": 1,
+      "sort": 1,
+      "install_checks": "data/plugins/apache",
+      "dependent": "apache",
+      "versions": [
+        {
+          "version": "2.4.57",
+          "downloads": [
+            "https://www.apachelounge.com/download/VS16/binaries/httpd-2.4.57-win64-VS16.zip"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mysql",
+      "title": "MySQL",
+      "version": "5.7.44",
+      "ps": "Classic relational database service for WordPress, Laravel, and CMS stacks.",
+      "price": "0",
+      "endtime": 0,
+      "type": 2,
+      "sort": 1,
+      "install_checks": "data/plugins/mysql",
+      "dependent": "mysql",
+      "versions": [
+        {
+          "version": "5.7.44",
+          "downloads": [
+            "https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.44-winx64.zip",
+            "https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.44-winx64.zip"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "phpmyadmin",
+      "title": "phpMyAdmin",
+      "version": "5.2.1",
+      "ps": "Browser-based MySQL administration tool for tables, users, and exports.",
+      "price": "0",
+      "endtime": 0,
+      "type": 3,
+      "sort": 1,
+      "install_checks": "data/plugins/phpmyadmin",
+      "dependent": "mysql",
+      "versions": [
+        {
+          "version": "5.2.1",
+          "downloads": [
+            "https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "php",
+      "title": "PHP",
+      "version": "8.4.20",
+      "ps": "Latest PHP runtime with FPM support for modern frameworks and CMS sites.",
+      "price": "0",
+      "endtime": 0,
+      "type": 1,
+      "sort": 2,
+      "dependent": "php",
+      "versions": [
+        {
+          "version": "8.3.30",
+          "install_checks": "data/plugins/php-8.3",
+          "downloads": [
+            "https://downloads.php.net/~windows/releases/archives/php-8.3.30-Win32-vs16-x64.zip",
+            "https://windows.php.net/downloads/releases/archives/php-8.3.30-Win32-vs16-x64.zip"
+          ]
+        },
+        {
+          "version": "8.4.20",
+          "install_checks": "data/plugins/php-8.4",
+          "downloads": [
+            "https://downloads.php.net/~windows/releases/archives/php-8.4.20-Win32-vs17-x64.zip",
+            "https://windows.php.net/downloads/releases/archives/php-8.4.20-Win32-vs17-x64.zip"
+          ]
+        }
+      ]
+    }
+  ]
+}
